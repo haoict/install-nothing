@@ -66,10 +66,10 @@ pub struct BiosConfig {
 impl Default for BiosConfig {
     fn default() -> Self {
         Self {
-            vendor: "American Megatrends BIOS (C)2003-2025",
+            vendor: "American Megatrends BIOS (C)2003-2026",
             version: "AMIBIOS v08.00.15",
             new_version: "v08.00.16",
-            bios_date: "11/15/2025",
+            bios_date: "03/03/2026",
             header_delay: 400,
             post_start_delay: 400,
             cpu_detect_time: 800,

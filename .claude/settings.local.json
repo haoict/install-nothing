@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo build)",
+      "Bash(cargo check --all-targets)",
+      "Bash(git diff --stat src/stages/*.rs)",
+      "Bash(cargo build --quiet)",
+      "Bash(cargo run --quiet -- --help)",
+      "Bash(cargo check)",
+      "Bash(cargo run -- --help)",
+      "Bash(cargo build --release)"
+    ]
+  }
+}

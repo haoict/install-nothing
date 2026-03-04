@@ -17,37 +17,39 @@ use rand::seq::SliceRandom;
 use std::io;
 
 fn main() {
-    if let Err(e) = run_installer() {
-        handle_error(e);
+    let cli = Cli::parse();
+    let compact = cli.compact;
+
+    if let Err(e) = run_installer(cli) {
+        handle_error(e, compact);
     }
 }
 
-fn run_installer() -> io::Result<()> {
-    let cli = Cli::parse();
+fn run_installer(cli: Cli) -> io::Result<()> {
     let mut stages = cli.get_stages();
+    let compact = cli.compact;
 
     let mut rng = rand::thread_rng();
     stages.shuffle(&mut rng);
 
-    let mut installer = Installer::new(stages);
+    let mut installer = Installer::new(stages, compact);
     installer.run()
 }
 
-fn handle_error(e: io::Error) {
+fn handle_error(e: io::Error, compact: bool) {
     if e.kind() == io::ErrorKind::Interrupted {
-        println!(
-            "\n\n{}",
-            "═══════════════════════════════════════".bright_cyan()
-        );
+        let separator = if compact {
+            "═".repeat(38)
+        } else {
+            "═".repeat(39)
+        };
+        println!("\n\n{}", separator.bright_cyan());
         println!("{}", "Installation cancelled by user.".bright_white());
         println!(
             "{}",
             "Thank you for using Universal System Installer!".bright_white()
         );
-        println!(
-            "{}",
-            "═══════════════════════════════════════".bright_cyan()
-        );
+        println!("{}", separator.bright_cyan());
     } else {
         eprintln!("\n{} {:?}", "Error:".bright_red(), e);
         std::process::exit(1);

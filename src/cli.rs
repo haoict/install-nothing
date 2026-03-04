@@ -92,6 +92,10 @@ pub struct Cli {
     /// Exclude specific stages from installation
     #[arg(short, long, value_enum, num_args = 0.., conflicts_with = "stages")]
     pub exclude: Vec<Stage>,
+
+    /// Use compact UI mode for smaller displays
+    #[arg(short = 'c', long)]
+    pub compact: bool,
 }
 
 impl Cli {
@@ -121,6 +125,7 @@ mod tests {
             stages: vec![],
             all: false,
             exclude: vec![],
+            compact: false,
         };
         assert_eq!(cli.get_stages(), Stage::all());
     }
@@ -131,6 +136,7 @@ mod tests {
             stages: vec![],
             all: true,
             exclude: vec![],
+            compact: false,
         };
         assert_eq!(cli.get_stages(), Stage::all());
     }
@@ -141,6 +147,7 @@ mod tests {
             stages: vec![Stage::Bios, Stage::Boot],
             all: false,
             exclude: vec![],
+            compact: false,
         };
         assert_eq!(cli.get_stages(), vec![Stage::Bios, Stage::Boot]);
     }
@@ -151,6 +158,7 @@ mod tests {
             stages: vec![],
             all: false,
             exclude: vec![Stage::Ai],
+            compact: false,
         };
         let result = cli.get_stages();
         assert!(!result.contains(&Stage::Ai));
@@ -163,6 +171,7 @@ mod tests {
             stages: vec![],
             all: true,
             exclude: vec![Stage::Ai, Stage::Cloud],
+            compact: false,
         };
         let result = cli.get_stages();
         assert!(!result.contains(&Stage::Ai));
@@ -176,6 +185,7 @@ mod tests {
             stages: vec![],
             all: false,
             exclude: Stage::all(),
+            compact: false,
         };
         let result = cli.get_stages();
         assert_eq!(result.len(), 0);

@@ -1,7 +1,8 @@
 use crate::cli::Stage;
+use crate::log_generator::LogGenerator;
 use crate::messages::{EASTER_EGGS, RETRY_MESSAGES, WARNINGS};
 use crate::stages::selected_stages;
-use crate::ui::Spinner;
+use crate::ui::{ProgressBar, Spinner};
 use colored::*;
 use crossterm::{
     cursor,
@@ -17,13 +18,15 @@ use std::time::Duration;
 pub struct Installer {
     rng: rand::rngs::ThreadRng,
     selected_stages: Vec<Stage>,
+    compact: bool,
 }
 
 impl Installer {
-    pub fn new(stages: Vec<Stage>) -> Self {
+    pub fn new(stages: Vec<Stage>, compact: bool) -> Self {
         Self {
             rng: rand::thread_rng(),
             selected_stages: stages,
+            compact,
         }
     }
 
@@ -41,20 +44,16 @@ impl Installer {
     }
 
     fn print_header(&self) {
-        println!(
-            "{}",
-            "=================================================================".bright_cyan()
-        );
-        println!(
-            "{}",
+        let sep_len = if self.compact { 48 } else { 63 };
+        let separator = "=".repeat(sep_len);
+        let title = if self.compact {
+            " UNIVERSAL SYSTEM INSTALLER v3.2.1 (Build 1999)"
+        } else {
             "         UNIVERSAL SYSTEM INSTALLER v3.2.1 (Build 1999)"
-                .bright_white()
-                .bold()
-        );
-        println!(
-            "{}",
-            "=================================================================".bright_cyan()
-        );
+        };
+        println!("{}", separator.bright_cyan());
+        println!("{}", title.bright_white().bold());
+        println!("{}", separator.bright_cyan());
         println!();
         thread::sleep(Duration::from_millis(1500));
     }
@@ -96,6 +95,10 @@ impl Installer {
     }
 
     pub fn run(&mut self) -> io::Result<()> {
+        // Set compact mode globally
+        LogGenerator::set_compact_mode(self.compact);
+        ProgressBar::set_compact_mode(self.compact);
+
         terminal::enable_raw_mode()?;
         execute!(
             io::stdout(),
@@ -123,22 +126,16 @@ impl Installer {
             cycle += 1;
 
             if cycle > 1 {
-                println!(
-                    "\n{}",
-                    "═══════════════════════════════════════════════════════════════"
-                        .bright_magenta()
-                );
+                let cycle_sep_len = if self.compact { 38 } else { 63 };
+                let separator = "═".repeat(cycle_sep_len);
+                println!("\n{}", separator.bright_magenta());
                 println!(
                     "{}",
                     format!("Beginning installation cycle #{}...", cycle)
                         .bright_magenta()
                         .bold()
                 );
-                println!(
-                    "{}",
-                    "═══════════════════════════════════════════════════════════════"
-                        .bright_magenta()
-                );
+                println!("{}", separator.bright_magenta());
                 thread::sleep(Duration::from_millis(1000));
             }
 
@@ -171,6 +168,6 @@ impl Installer {
 
 impl Default for Installer {
     fn default() -> Self {
-        Self::new(Stage::all())
+        Self::new(Stage::all(), false)
     }
 }

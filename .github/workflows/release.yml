@@ -27,20 +27,20 @@ jobs:
             artifact_name: install-nothing
             asset_name: install-nothing-linux-aarch64
 
-          - target: x86_64-apple-darwin
-            os: macos-latest
-            artifact_name: install-nothing
-            asset_name: install-nothing-macos-x86_64
+          # - target: x86_64-apple-darwin
+          #   os: macos-latest
+          #   artifact_name: install-nothing
+          #   asset_name: install-nothing-macos-x86_64
 
           - target: aarch64-apple-darwin
             os: macos-latest
             artifact_name: install-nothing
             asset_name: install-nothing-macos-aarch64
 
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-            artifact_name: install-nothing.exe
-            asset_name: install-nothing-windows-x86_64.exe
+          # - target: x86_64-pc-windows-msvc
+          #   os: windows-latest
+          #   artifact_name: install-nothing.exe
+          #   asset_name: install-nothing-windows-x86_64.exe
 
     steps:
       - name: Checkout
@@ -91,13 +91,13 @@ jobs:
           cp artifacts/install-nothing-linux-aarch64/install-nothing release/install-nothing-linux-aarch64
           chmod +x release/install-nothing-linux-aarch64
 
-          cp artifacts/install-nothing-macos-x86_64/install-nothing release/install-nothing-macos-x86_64
-          chmod +x release/install-nothing-macos-x86_64
+          # cp artifacts/install-nothing-macos-x86_64/install-nothing release/install-nothing-macos-x86_64
+          # chmod +x release/install-nothing-macos-x86_64
 
           cp artifacts/install-nothing-macos-aarch64/install-nothing release/install-nothing-macos-aarch64
           chmod +x release/install-nothing-macos-aarch64
 
-          cp artifacts/install-nothing-windows-x86_64.exe/install-nothing.exe release/install-nothing-windows-x86_64.exe
+          # cp artifacts/install-nothing-windows-x86_64.exe/install-nothing.exe release/install-nothing-windows-x86_64.exe
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

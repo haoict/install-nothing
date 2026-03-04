@@ -75,14 +75,14 @@ impl DenoStage {
     /// Prompt user to retry or abort
     fn prompt_retry(&self) -> io::Result<bool> {
         println!();
-        print!("{}", "Try again or abort? [1-2]: ".bright_yellow().bold());
+        print!("{}", "Try again or abort? [y/N]: ".bright_yellow().bold());
         io::stdout().flush()?;
 
         loop {
             if let Ok(Event::Key(key_event)) = event::read() {
                 match key_event.code {
-                    KeyCode::Char('1') => {
-                        println!("1");
+                    KeyCode::Char('y') | KeyCode::Char('Y') | KeyCode::Enter => {
+                        println!("y");
                         println!(
                             "{} {}",
                             LogGenerator::timestamp().dimmed(),
@@ -91,8 +91,8 @@ impl DenoStage {
                         thread::sleep(Duration::from_millis(1000));
                         return Ok(true);
                     }
-                    KeyCode::Char('2') => {
-                        println!("2");
+                    KeyCode::Char('n') | KeyCode::Char('N') => {
+                        println!("n");
                         println!(
                             "{} {}",
                             LogGenerator::timestamp().dimmed(),
@@ -121,7 +121,12 @@ impl InstallationStage for DenoStage {
 
         let mut rng = rand::thread_rng();
 
-        let should_fail = rng.gen_bool(0.3);
+        // Compact mode: disable random failures
+        let should_fail = if ProgressBar::is_compact() {
+            false
+        } else {
+            rng.gen_bool(0.3)
+        };
 
         if should_fail {
             println!(

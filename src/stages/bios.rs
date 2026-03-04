@@ -9,6 +9,8 @@ use std::thread;
 use std::time::Duration;
 use sysinfo::System;
 
+static BIOS_BOX_WIDTH: usize = 41;
+
 pub struct BiosStage {
     config: BiosConfig,
 }
@@ -90,21 +92,24 @@ impl InstallationStage for BiosStage {
             rng.gen::<u16>()
         );
 
+        let box_width = BIOS_BOX_WIDTH;
+        let inner_width = box_width - 3;
+
         println!(
             "{}",
-            "╔═══════════════════════════════════════════════════════════════╗".bright_cyan()
+            format!("╔{}╗", "═".repeat(box_width - 2)).bright_cyan()
         );
         println!(
             "{}",
-            format!("║  {:<61}║", self.config.vendor).bright_cyan()
+            format!("║ {:<width$}║", self.config.vendor, width = inner_width).bright_cyan()
         );
         println!(
             "{}",
-            format!("║  {:<61}║", self.config.version).bright_cyan()
+            format!("║ {:<width$}║", self.config.version, width = inner_width).bright_cyan()
         );
         println!(
             "{}",
-            "╚═══════════════════════════════════════════════════════════════╝".bright_cyan()
+            format!("╚{}╝", "═".repeat(box_width - 2)).bright_cyan()
         );
         println!();
         println!(
@@ -311,20 +316,15 @@ impl InstallationStage for BiosStage {
         thread::sleep(Duration::from_millis(self.config.boot_display_time));
 
         println!();
-        println!(
-            "{}",
-            "═══════════════════════════════════════════════════════════════".bright_yellow()
-        );
+        let sep = "═".repeat(BIOS_BOX_WIDTH as usize);
+        println!("{}", sep.bright_yellow());
         println!(
             "{}",
             "  CRITICAL: Firmware Update Sequence Initiated"
                 .bright_yellow()
                 .bold()
         );
-        println!(
-            "{}",
-            "═══════════════════════════════════════════════════════════════".bright_yellow()
-        );
+        println!("{}", sep.bright_yellow());
         thread::sleep(Duration::from_millis(self.config.firmware_header_delay));
 
         spinner.animate(
